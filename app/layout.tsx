@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "../components/Header";
 
 export const metadata: Metadata = {
-  title: "Palliative Care Club Inventory",
+  title: "Sparsham MACE",
   description: "Manage and request palliative care equipment stock",
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({
             {children}
           </main>
           <footer className="bg-gray-50 border-t border-gray-200 text-xs text-center py-4 text-gray-500">
-            Palliative Care Club
+            SPARSHAM MACE
           </footer>
         </div>
       </body>

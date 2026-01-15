@@ -31,9 +31,12 @@ export default function Header() {
   return (
     <header className="bg-[#00b4d8] text-white p-4 shadow-lg shadow-[#00b4d8]/20 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <h1 className="font-bold text-xl tracking-tight">
-          Palliative Care Club Inventory
-        </h1>
+        <div className="flex items-center gap-3">
+            <img src="/club_logo.png" alt="Club Logo" className="h-10 w-auto rounded-full bg-white shadow-sm" />
+            <h1 className="font-bold text-xl tracking-tight">
+            SPARSHAM MACE
+            </h1>
+        </div>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-4 text-sm items-center">

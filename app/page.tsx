@@ -153,7 +153,7 @@ export default function HomePage() {
                     <label className="block text-xs font-medium text-gray-700 mb-1">College ID</label>
                     <input
                       required
-                      placeholder="e.g. 23BCA23"
+                      placeholder="e.g. B23EC190"
                       className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
                       value={form.collegeId}
                       onChange={(e) =>
@@ -177,7 +177,7 @@ export default function HomePage() {
                     <label className="block text-xs font-medium text-gray-700 mb-1">Class/Department</label>
                     <input
                       required
-                      placeholder="BCA 2nd Year"
+                      placeholder="S3 LA"
                       className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
                       value={form.className}
                       onChange={(e) =>
