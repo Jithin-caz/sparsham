@@ -28,14 +28,12 @@ function LoginForm() {
       return;
     }
 
-    // If we came from a protected route, go back there
     const from = searchParams.get("from");
     if (from) {
       router.push(from);
       return;
     }
 
-    // Otherwise, route based on role
     const role = data.user?.role as "member" | "super" | undefined;
     if (role === "super") {
       router.push("/admin/dashboard");
@@ -45,15 +43,19 @@ function LoginForm() {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 border rounded-lg p-4 bg-white shadow-sm">
-      <h2 className="text-lg font-semibold mb-3">Member / Admin Login</h2>
-      <form onSubmit={submit} className="space-y-3">
+    <div className="max-w-md mx-auto mt-12 border-2 border-gray-200 rounded-xl p-8 bg-white shadow-xl animate-scale-in">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+        Member / Admin Login
+      </h2>
+      <form onSubmit={submit} className="space-y-5">
         <div>
-          <label className="block text-xs mb-1">Email</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            Email
+          </label>
           <input
             type="email"
             required
-            className="w-full border rounded px-2 py-1 text-sm"
+            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all"
             value={form.email}
             onChange={(e) =>
               setForm((f) => ({ ...f, email: e.target.value }))
@@ -61,11 +63,13 @@ function LoginForm() {
           />
         </div>
         <div>
-          <label className="block text-xs mb-1">Password</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            Password
+          </label>
           <input
             type="password"
             required
-            className="w-full border rounded px-2 py-1 text-sm"
+            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all"
             value={form.password}
             onChange={(e) =>
               setForm((f) => ({ ...f, password: e.target.value }))
@@ -73,12 +77,16 @@ function LoginForm() {
           />
         </div>
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm animate-scale-in">
+            {error}
+          </div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-1 bg-sky-700 text-white rounded py-1.5 text-sm hover:bg-sky-800 disabled:opacity-60"
+          className="w-full mt-2 bg-[#00b4d8] text-white rounded-lg py-3 text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
@@ -89,12 +97,16 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="max-w-sm mx-auto mt-10 border rounded-lg p-4 bg-white shadow-sm">
-        <h2 className="text-lg font-semibold mb-3">Member / Admin Login</h2>
-        <p className="text-sm text-slate-500">Loading...</p>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="max-w-md mx-auto mt-12 border-2 border-gray-200 rounded-xl p-8 bg-white shadow-xl">
+          <h2 className="text-2xl font-bold mb-3 text-gray-800 text-center">
+            Member / Admin Login
+          </h2>
+          <p className="text-sm text-gray-500 text-center">Loading...</p>
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

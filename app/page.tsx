@@ -14,6 +14,7 @@ export default function HomePage() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     collegeId: "",
     requesterName: "",
@@ -40,6 +41,7 @@ export default function HomePage() {
       return;
     }
 
+    setSubmitting(true);
     const res = await fetch("/api/requests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,6 +49,7 @@ export default function HomePage() {
     });
 
     const data = await res.json();
+    setSubmitting(false);
     if (!res.ok) {
       setError(data.error || "Failed to submit request");
     } else {
@@ -62,14 +65,22 @@ export default function HomePage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fade-in">
       <section>
-        <h2 className="text-xl font-semibold mb-2">Available Items</h2>
-        {loading && <p>Loading items...</p>}
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Available Items</h2>
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-[#00b4d8] text-lg">Loading items...</div>
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 animate-scale-in">
+            {error}
+          </div>
+        )}
         {!loading && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item, index) => (
               <button
                 key={item._id}
                 type="button"
@@ -78,55 +89,62 @@ export default function HomePage() {
                     selectedItemId === item._id ? null : item._id
                   )
                 }
-                className={`flex flex-col border rounded-lg overflow-hidden text-left bg-white shadow-sm hover:shadow-md transition ${
-                  selectedItemId === item._id ? "ring-2 ring-sky-500" : ""
+                className={`flex flex-col border-2 rounded-xl overflow-hidden text-left bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-scale-in ${
+                  selectedItemId === item._id
+                    ? "ring-2 ring-[#00b4d8] border-[#00b4d8] shadow-[#00b4d8]/20"
+                    : "border-gray-200 hover:border-[#00b4d8]/50"
                 }`}
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
                 />
-                <div className="p-3 space-y-1">
-                  <div className="font-medium">{item.name}</div>
+                <div className="p-4 space-y-2">
+                  <div className="font-semibold text-gray-800">{item.name}</div>
                   {item.description && (
-                    <p className="text-xs text-slate-600">
+                    <p className="text-sm text-gray-600 line-clamp-2">
                       {item.description}
                     </p>
                   )}
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-medium text-[#00b4d8]">
                     Quantity: {item.quantity}
                   </p>
                 </div>
               </button>
             ))}
             {items.length === 0 && (
-              <p className="text-sm text-slate-500">No items available.</p>
+              <p className="text-gray-500 col-span-full text-center py-8">
+                No items available.
+              </p>
             )}
           </div>
         )}
       </section>
 
-      <section className="border rounded-lg p-4 bg-white shadow-sm">
-        <h2 className="text-lg font-semibold mb-2">Request an Item</h2>
-        <p className="text-xs text-slate-500 mb-3">
+      <section className="border-2 border-gray-200 rounded-xl p-6 bg-white shadow-lg animate-slide-in">
+        <h2 className="text-xl font-bold mb-2 text-gray-800">Request an Item</h2>
+        <p className="text-sm text-gray-600 mb-4">
           Anyone can request freely. Please select an item above and fill in
           your details.
         </p>
 
-        <form onSubmit={submitRequest} className="space-y-3">
-          <div className="text-xs text-slate-600">
+        <form onSubmit={submitRequest} className="space-y-4">
+          <div className="text-sm font-medium text-gray-700 bg-[#90e0ef]/20 px-4 py-2 rounded-lg">
             Selected Item:{" "}
-            {selectedItemId
-              ? items.find((i) => i._id === selectedItemId)?.name
-              : "None"}
+            <span className="text-[#00b4d8]">
+              {selectedItemId
+                ? items.find((i) => i._id === selectedItemId)?.name
+                : "None"}
+            </span>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <input
               required
               placeholder="College ID"
-              className="border rounded px-2 py-1 text-sm"
+              className="border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20"
               value={form.collegeId}
               onChange={(e) =>
                 setForm((f) => ({ ...f, collegeId: e.target.value }))
@@ -135,7 +153,7 @@ export default function HomePage() {
             <input
               required
               placeholder="Name"
-              className="border rounded px-2 py-1 text-sm"
+              className="border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20"
               value={form.requesterName}
               onChange={(e) =>
                 setForm((f) => ({ ...f, requesterName: e.target.value }))
@@ -144,7 +162,7 @@ export default function HomePage() {
             <input
               required
               placeholder="Class"
-              className="border rounded px-2 py-1 text-sm"
+              className="border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20"
               value={form.className}
               onChange={(e) =>
                 setForm((f) => ({ ...f, className: e.target.value }))
@@ -153,7 +171,7 @@ export default function HomePage() {
             <input
               required
               placeholder="Phone"
-              className="border rounded px-2 py-1 text-sm"
+              className="border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20"
               value={form.phone}
               onChange={(e) =>
                 setForm((f) => ({ ...f, phone: e.target.value }))
@@ -163,15 +181,25 @@ export default function HomePage() {
 
           <button
             type="submit"
-            className="mt-1 inline-flex items-center px-3 py-1.5 bg-sky-700 text-white rounded text-sm hover:bg-sky-800"
+            disabled={submitting}
+            className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00b4d8] text-white rounded-lg text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
           >
-            Submit Request
+            {submitting && (
+              <span className="h-4 w-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
+            )}
+            {submitting ? "Submitting..." : "Submit Request"}
           </button>
 
           {message && (
-            <p className="text-sm text-emerald-600 mt-2">{message}</p>
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mt-2 animate-scale-in">
+              {message}
+            </div>
           )}
-          {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mt-2 animate-scale-in">
+              {error}
+            </div>
+          )}
         </form>
       </section>
     </div>

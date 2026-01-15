@@ -14,13 +14,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-slate-900 antialiased">
+      <body className="bg-white text-gray-900 antialiased">
         <div className="min-h-screen flex flex-col">
           <Header />
-          <main className="flex-1 max-w-5xl mx-auto w-full p-4">
+          <main className="flex-1 max-w-6xl mx-auto w-full p-6 animate-fade-in">
             {children}
           </main>
-          <footer className="bg-slate-100 border-t text-xs text-center py-4 text-slate-500">
+          <footer className="bg-gray-50 border-t border-gray-200 text-xs text-center py-4 text-gray-500">
             Palliative Care Club
           </footer>
         </div>
