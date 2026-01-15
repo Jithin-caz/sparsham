@@ -21,6 +21,14 @@ interface Log {
   _id: string;
   type: string;
   timestamp: string;
+  user?: { name: string };
+  item?: { name: string };
+  request?: {
+    item?: { name: string };
+    requesterName: string;
+    className: string;
+    handledBy?: { name: string };
+  };
   meta?: Record<string, unknown>;
 }
 
@@ -94,6 +102,8 @@ export default function AdminDashboardClient() {
     setRequests(data);
   };
 
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
+
   useEffect(() => {
     loadItems();
     loadMembers();
@@ -122,6 +132,48 @@ export default function AdminDashboardClient() {
     await loadItems();
     alert("Item added successfully!");
     setAddingItem(false);
+  };
+
+  const updateItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+
+    setAddingItem(true); // Reuse loading state
+    const res = await fetch(`/api/items/${editingItem._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(itemForm),
+    });
+
+    if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Failed to update item");
+        setAddingItem(false);
+        return;
+    }
+
+    setEditingItem(null);
+    setItemForm({ name: "", description: "", quantity: 1, imageUrl: "" });
+    await loadItems();
+    alert("Item updated successfully!");
+    setAddingItem(false);
+  };
+
+  const startEdit = (item: Item) => {
+    setEditingItem(item);
+    setItemForm({
+        name: item.name,
+        description: item.description || "",
+        quantity: item.quantity,
+        imageUrl: item.imageUrl
+    });
+    // Scroll correctly to form
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEdit = () => {
+    setEditingItem(null);
+    setItemForm({ name: "", description: "", quantity: 1, imageUrl: "" });
   };
 
   const deleteItem = async (id: string) => {
@@ -170,7 +222,7 @@ export default function AdminDashboardClient() {
     setApprovingMemberId(null);
   };
 
-  const actOnRequest = async (id: string, action: "approve" | "reject") => {
+  const actOnRequest = async (id: string, action: "approve" | "reject" | "return") => {
     setActingRequestId(id);
     const res = await fetch(`/api/requests/${id}/${action}`, {
       method: "POST",
@@ -183,7 +235,13 @@ export default function AdminDashboardClient() {
     }
     await loadRequests();
     alert(
-      `Request ${action === "approve" ? "approved" : "rejected"} successfully!`
+      `Request ${
+        action === "approve"
+          ? "approved"
+          : action === "return"
+          ? "marked as returned"
+          : "rejected"
+      } successfully!`
     );
     setActingRequestId(null);
   };
@@ -196,6 +254,8 @@ export default function AdminDashboardClient() {
         return "bg-red-100 text-red-800 border-red-200";
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "returned":
+        return "bg-blue-100 text-blue-800 border-blue-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -205,14 +265,16 @@ export default function AdminDashboardClient() {
     <div className="space-y-8 animate-fade-in">
       <div>
         <h2 className="text-2xl font-bold text-gray-800">
-          Admin Dashboard (Super User)
+          Admin Dashboard
         </h2>
       </div>
 
       <section className="border-2 border-gray-200 rounded-xl p-6 bg-white shadow-lg animate-slide-in">
-        <h3 className="font-bold mb-4 text-lg text-gray-800">Manage Items</h3>
+        <h3 className="font-bold mb-4 text-lg text-gray-800">
+            {editingItem ? "Edit Item" : "Manage Items"}
+        </h3>
         <form
-          onSubmit={addItem}
+          onSubmit={editingItem ? updateItem : addItem}
           className="grid gap-4 sm:grid-cols-4 text-sm mb-6"
         >
           <input
@@ -251,13 +313,24 @@ export default function AdminDashboardClient() {
               setItemForm((f) => ({ ...f, imageUrl: e.target.value }))
             }
           />
-          <button
-            type="submit"
-            disabled={addingItem}
-            className="sm:col-span-4 inline-flex justify-center px-6 py-2.5 bg-[#00b4d8] text-white rounded-lg text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
-          >
-            {addingItem ? "Adding..." : "Add Item"}
-          </button>
+          <div className="sm:col-span-4 flex gap-2">
+            <button
+                type="submit"
+                disabled={addingItem}
+                className="flex-1 inline-flex justify-center px-6 py-2.5 bg-[#00b4d8] text-white rounded-lg text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+            >
+                {addingItem ? (editingItem ? "Updating..." : "Adding...") : (editingItem ? "Update Item" : "Add Item")}
+            </button>
+            {editingItem && (
+                <button
+                    type="button"
+                    onClick={cancelEdit}
+                    className="px-6 py-2.5 bg-gray-500 text-white rounded-lg text-sm font-medium hover:bg-gray-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                    Cancel
+                </button>
+            )}
+          </div>
         </form>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -283,12 +356,20 @@ export default function AdminDashboardClient() {
                   Qty: {item.quantity}
                 </div>
               </div>
-              <button
-                onClick={() => deleteItem(item._id)}
-                className="self-start px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 text-xs font-medium"
-              >
-                Delete
-              </button>
+              <div className="flex flex-col gap-1 self-start">
+                  <button
+                    onClick={() => startEdit(item)}
+                    className="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 text-xs font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteItem(item._id)}
+                    className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 text-xs font-medium"
+                  >
+                    Delete
+                  </button>
+              </div>
             </div>
           ))}
           {items.length === 0 && (
@@ -361,6 +442,17 @@ export default function AdminDashboardClient() {
                       className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {actingRequestId === r._id ? "Rejecting..." : "Reject"}
+                    </button>
+                  </div>
+                )}
+                {r.status === "approved" && (
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => actOnRequest(r._id, "return")}
+                      disabled={actingRequestId === r._id}
+                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                      {actingRequestId === r._id ? "Marking..." : "Mark Returned"}
                     </button>
                   </div>
                 )}
@@ -477,10 +569,51 @@ export default function AdminDashboardClient() {
               className="border-2 border-gray-200 rounded-lg px-4 py-2 flex justify-between items-center bg-gray-50 hover:bg-white transition-colors duration-200 animate-scale-in"
               style={{ animationDelay: `${index * 30}ms` }}
             >
-              <span className="font-medium text-gray-800">{log.type}</span>
-              <span className="text-sm text-gray-500">
-                {new Date(log.timestamp).toLocaleString()}
-              </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start mb-1">
+                  <span className="font-bold text-gray-800 text-sm">
+                    {log.type === "request_created" && "New Request"}
+                    {log.type === "request_approved" && "Request Approved"}
+                    {log.type === "request_rejected" && "Request Rejected"}
+                    {log.type === "request_returned" && "Item Returned"}
+                  </span>
+                  <span className="text-xs text-gray-400 whitespace-nowrap ml-2">
+                    {new Date(log.timestamp).toLocaleString()}
+                  </span>
+                </div>
+                
+                <div className="text-sm text-gray-600 space-y-0.5">
+                  {log.request && (
+                    <>
+                       <div className="font-medium text-gray-800">
+                        {log.request?.item?.name || log.item?.name || "Unknown Item"}
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-medium">Requester:</span> {log.request.requesterName} ({log.request.className})
+                      </div>
+                      
+                      {log.type === "request_approved" && log.request.handledBy && (
+                        <div className="text-xs text-green-600">
+                          Approved by {log.request.handledBy.name}
+                        </div>
+                      )}
+                      
+                      {log.type === "request_returned" && log.user && (
+                         <div className="text-xs text-blue-600">
+                          Marked returned by {log.user.name}
+                        </div>
+                      )}
+
+                      {log.type === "request_rejected" && log.user && (
+                        <div className="text-xs text-red-600">
+                          Rejected by {log.user.name}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+              {/* Timestamp moved to top right of card */}
             </div>
           ))}
           {logs.length === 0 && (

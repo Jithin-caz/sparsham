@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "../../../../lib/mongodb";
-import { Item } from "../../../../models/Item";
-import { requireRole, logTransaction } from "../../../../lib/auth";
+import { connectDB } from "../../../../../lib/mongodb";
+import { Item } from "../../../../../models/Item";
+import { requireRole, logTransaction } from "../../../../../lib/auth";
 
-export async function PATCH(
+export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -12,15 +12,25 @@ export async function PATCH(
 
   await connectDB();
   const { id } = await params;
-  const body = await req.json();
-  const item = await Item.findByIdAndUpdate(id, body, { new: true }).exec();
+  const { name, description, quantity, imageUrl } = await req.json();
 
-  if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const item = await Item.findByIdAndUpdate(
+    id,
+    { name, description, quantity, imageUrl },
+    { new: true, runValidators: true }
+  ).exec();
+
+  if (!item) {
+    return NextResponse.json({ error: "Item not found" }, { status: 404 });
+  }
 
   await logTransaction({
     type: "item_updated",
     itemId: item._id.toString(),
     userId: user._id.toString(),
+    meta: {
+      name, quantity, description // Log changed values for reference
+    }
   });
 
   return NextResponse.json(item);
@@ -35,14 +45,18 @@ export async function DELETE(
 
   await connectDB();
   const { id } = await params;
+
   const item = await Item.findByIdAndDelete(id).exec();
-  if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!item) {
+    return NextResponse.json({ error: "Item not found" }, { status: 404 });
+  }
 
   await logTransaction({
     type: "item_deleted",
-    itemId: item._id.toString(),
+    itemId: id,
     userId: user._id.toString(),
+    meta: { name: item.name }
   });
 
-  return NextResponse.json({ message: "Deleted" });
+  return NextResponse.json({ message: "Item deleted" });
 }

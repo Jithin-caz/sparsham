@@ -22,8 +22,24 @@ export async function GET(req: NextRequest) {
     from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   }
 
-  const logs = await TransactionLog.find({ timestamp: { $gte: from } })
+  const logs = await TransactionLog.find({
+    timestamp: { $gte: from },
+    type: {
+      $in: [
+        "request_created",
+        "request_approved",
+        "request_rejected",
+        "request_returned",
+      ],
+    },
+  })
     .sort({ timestamp: -1 })
+    .populate("user", "name")
+    .populate("item", "name")
+    .populate({
+      path: "request",
+      populate: { path: "handledBy", select: "name" },
+    })
     .lean()
     .exec();
 

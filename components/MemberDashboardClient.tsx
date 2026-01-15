@@ -45,7 +45,7 @@ export default function MemberDashboardClient() {
     load();
   }, []);
 
-  const actOnRequest = async (id: string, action: "approve" | "reject") => {
+  const actOnRequest = async (id: string, action: "approve" | "reject" | "return") => {
     setActingId(id);
     const res = await fetch(`/api/requests/${id}/${action}`, {
       method: "POST",
@@ -58,7 +58,15 @@ export default function MemberDashboardClient() {
     }
     await load();
     setActingId(null);
-    alert(`Request ${action === "approve" ? "approved" : "rejected"} successfully!`);
+    alert(
+      `Request ${
+        action === "approve"
+          ? "approved"
+          : action === "return"
+          ? "marked as returned"
+          : "rejected"
+      } successfully!`
+    );
   };
 
   const getStatusColor = (status: string) => {
@@ -69,6 +77,8 @@ export default function MemberDashboardClient() {
         return "bg-red-100 text-red-800 border-red-200";
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "returned":
+        return "bg-blue-100 text-blue-800 border-blue-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -152,6 +162,17 @@ export default function MemberDashboardClient() {
                       className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {actingId === r._id ? "Rejecting..." : "Reject"}
+                    </button>
+                  </div>
+                )}
+                {r.status === "approved" && (
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => actOnRequest(r._id, "return")}
+                      disabled={actingId === r._id}
+                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                      {actingId === r._id ? "Marking..." : "Mark Returned"}
                     </button>
                   </div>
                 )}
