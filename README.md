@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Palliative Care Club Inventory System
 
-## Getting Started
+A Next.js 16 application for managing palliative care equipment inventory with MongoDB backend.
 
-First, run the development server:
+## Features
+
+- **Public Access**: Anyone can view available items and submit requests (no login required)
+- **Club Members**: Can approve/reject item requests (requires login and approval)
+- **Super User (Admin)**: Can add/remove items, approve club members, and view transaction logs
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- MongoDB with Mongoose
+- Tailwind CSS v4
+- bcryptjs for password hashing
+- Session-based authentication
+
+## Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/palliative-club
+SESSION_SECRET=your-long-random-secret-key-change-this-in-production
+DEFAULT_ITEM_IMAGE=https://via.placeholder.com/300x200?text=Palliative+Care
+```
+
+**Note**: Make sure MongoDB is running locally, or update `MONGODB_URI` to your MongoDB Atlas connection string.
+
+### 3. Start MongoDB
+
+Make sure MongoDB is running on your system. If using local MongoDB:
+
+```bash
+# Windows (if MongoDB is installed as a service, it should start automatically)
+# Or start manually:
+mongod
+```
+
+### 4. Create Initial Super User
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then seed the requested super user (bcrypt-hashed) into MongoDB:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run seed:super
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Or create a super user via API by making a POST request to `/api/auth/seed-super`:
 
-## Learn More
+**Using PowerShell:**
+```powershell
+Invoke-WebRequest -Uri http://localhost:3000/api/auth/seed-super -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"name":"Admin","email":"admin@example.com","password":"admin123"}'
+```
 
-To learn more about Next.js, take a look at the following resources:
+**Using curl:**
+```bash
+curl -X POST http://localhost:3000/api/auth/seed-super -H "Content-Type: application/json" -d "{\"name\":\"Admin\",\"email\":\"admin@example.com\",\"password\":\"admin123\"}"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 5. Access the Application
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Public Home**: http://localhost:3000
+- **Login Page**: http://localhost:3000/login
+- **Member Dashboard**: http://localhost:3000/member/dashboard (requires login)
+- **Admin Dashboard**: http://localhost:3000/admin/dashboard (requires super user login)
 
-## Deploy on Vercel
+## User Roles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### General Public
+- Can view all available items
+- Can submit requests with College ID, Name, Class, and Phone
+- No login required
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Club Members
+- Must be registered by admin
+- Must be approved by admin before login
+- Can approve/reject item requests
+- Can view all requests
+
+### Super User (Admin)
+- Can add/remove items
+- Can register new club members
+- Can approve pending club members
+- Can view transaction logs (weekly/monthly/yearly)
+
+## Project Structure
+
+```
+sparsham/
+├── app/
+│   ├── api/              # API routes
+│   │   ├── auth/         # Authentication endpoints
+│   │   ├── items/        # Item management
+│   │   ├── requests/     # Request handling
+│   │   ├── members/      # Member management
+│   │   └── logs/         # Transaction logs
+│   ├── admin/            # Admin dashboard
+│   ├── member/           # Member dashboard
+│   ├── login/            # Login page
+│   ├── layout.tsx        # Root layout
+│   ├── page.tsx          # Home page
+│   └── globals.css       # Global styles
+├── components/           # React components
+├── lib/                  # Utilities (auth, MongoDB)
+├── models/               # Mongoose models
+└── middleware.ts         # Route protection
+```
+
+## Development
+
+```bash
+npm run dev     # Start development server
+npm run build   # Build for production
+npm run start   # Start production server
+npm run lint    # Run ESLint
+```
+
+## Security Notes
+
+- Passwords are hashed using bcryptjs
+- Sessions are stored in httpOnly cookies
+- Route protection via middleware and server-side checks
+- Super user routes require authentication and role verification
