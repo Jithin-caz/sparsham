@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "../../../../../lib/mongodb";
-import { Item } from "../../../../../models/Item";
-import { requireRole, logTransaction } from "../../../../../lib/auth";
+import { connectDB } from "../../../../lib/mongodb";
+import { Item } from "../../../../models/Item";
+import { requireRole, logTransaction } from "../../../../lib/auth";
 
 export async function PUT(
   req: NextRequest,
