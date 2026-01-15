@@ -55,7 +55,7 @@ function LoginForm() {
           <input
             type="email"
             required
-            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all"
+            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
             value={form.email}
             onChange={(e) =>
               setForm((f) => ({ ...f, email: e.target.value }))
@@ -69,7 +69,7 @@ function LoginForm() {
           <input
             type="password"
             required
-            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all"
+            className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
             value={form.password}
             onChange={(e) =>
               setForm((f) => ({ ...f, password: e.target.value }))
@@ -86,7 +86,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-2 bg-[#00b4d8] text-white rounded-lg py-3 text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+          className="w-full mt-2 bg-[#5B65DC] text-white rounded-lg py-3 text-sm font-medium hover:bg-[#4A54C2] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
         >
           {loading ? "Logging in..." : "Login"}
         </button>

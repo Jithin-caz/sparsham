@@ -29,7 +29,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#00b4d8] text-white p-4 shadow-lg shadow-[#00b4d8]/20 sticky top-0 z-50">
+    <header className="bg-[#5B65DC] text-white p-4 shadow-lg shadow-[#5B65DC]/20 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
             <img src="/club_logo.png" alt="Club Logo" className="h-10 w-auto rounded-full bg-white shadow-sm" />
@@ -69,7 +69,7 @@ export default function Header() {
               </a>
               <button
                 onClick={handleLogout}
-                className="px-4 py-1.5 bg-white text-[#00b4d8] hover:bg-[#90e0ef] hover:text-white rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md"
+                className="px-4 py-1.5 bg-white text-[#5B65DC] hover:bg-[#EEEFFD] hover:text-[#5B65DC] rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md"
               >
                 Logout
               </button>

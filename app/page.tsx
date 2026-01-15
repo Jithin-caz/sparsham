@@ -70,7 +70,7 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Available Items</h2>
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-[#00b4d8] text-lg">Loading items...</div>
+            <div className="text-[#5B65DC] text-lg">Loading items...</div>
           </div>
         )}
         {error && (
@@ -91,8 +91,8 @@ export default function HomePage() {
                 }
                 className={`flex flex-col border-2 rounded-xl overflow-hidden text-left bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-scale-in ${
                   selectedItemId === item._id
-                    ? "ring-2 ring-[#00b4d8] border-[#00b4d8] shadow-[#00b4d8]/20"
-                    : "border-gray-200 hover:border-[#00b4d8]/50"
+                    ? "ring-2 ring-[#5B65DC] border-[#5B65DC] shadow-[#5B65DC]/20"
+                    : "border-gray-200 hover:border-[#5B65DC]/50"
                 }`}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
@@ -108,7 +108,7 @@ export default function HomePage() {
                       {item.description}
                     </p>
                   )}
-                  <p className="text-sm font-medium text-[#00b4d8]">
+                  <p className="text-sm font-medium text-[#5B65DC]">
                     Quantity: {item.quantity}
                   </p>
                 </div>
@@ -154,7 +154,7 @@ export default function HomePage() {
                     <input
                       required
                       placeholder="e.g. B23EC190"
-                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
+                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all outline-none"
                       value={form.collegeId}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, collegeId: e.target.value }))
@@ -166,7 +166,7 @@ export default function HomePage() {
                     <input
                       required
                       placeholder="John Doe"
-                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
+                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all outline-none"
                       value={form.requesterName}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, requesterName: e.target.value }))
@@ -178,7 +178,7 @@ export default function HomePage() {
                     <input
                       required
                       placeholder="S3 LA"
-                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
+                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all outline-none"
                       value={form.className}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, className: e.target.value }))
@@ -190,7 +190,7 @@ export default function HomePage() {
                     <input
                       required
                       placeholder="Phone"
-                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all outline-none"
+                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all outline-none"
                       value={form.phone}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, phone: e.target.value }))
@@ -210,7 +210,7 @@ export default function HomePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00b4d8] text-white rounded-lg text-sm font-medium hover:bg-[#0096c7] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#5B65DC] text-white rounded-lg text-sm font-medium hover:bg-[#4A54C2] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {submitting && (
                       <span className="h-4 w-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />

@@ -100,7 +100,7 @@ export default function MemberDashboardClient() {
       )}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-[#00b4d8] text-lg">Loading...</div>
+          <div className="text-[#5B65DC] text-lg">Loading...</div>
         </div>
       ) : (
         <div className="space-y-4">

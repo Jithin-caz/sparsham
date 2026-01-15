@@ -1,14 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --primary-color: #00b4d8;
-  --primary-hover: #0096c7;
-  --primary-light: #90e0ef;
+  --primary-color: #5B65DC;
+  --primary-hover: #4A54C2;
+  --primary-light: #EEEFFD;
+  --text-color: #122056;
+  --bg-color: #FAFAFD;
 }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 button {
@@ -28,8 +32,7 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  ring: 2px;
-  ring-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color);
 }
 
 @keyframes fadeIn {
@@ -75,4 +78,29 @@ select:focus {
 
 .animate-scale-in {
   animation: scaleIn 0.2s ease-out;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body, .print-full-width {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+  /* Ensure the logs section takes up full width and no shadow/border issues */
+  .logs-print-container {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .logs-list-container {
+    max-height: none !important;
+    overflow: visible !important;
+  }
 }

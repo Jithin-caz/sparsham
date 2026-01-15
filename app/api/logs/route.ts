@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   await connectDB();
   const { searchParams } = new URL(req.url);
   const period = searchParams.get("period") || "weekly";
+  const filter = searchParams.get("filter") || "all";
 
   const now = new Date();
   let from: Date;
@@ -22,23 +23,32 @@ export async function GET(req: NextRequest) {
     from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   }
 
+  let types = [
+    "request_created",
+    "request_approved",
+    "request_rejected",
+    "request_returned",
+  ];
+
+  if (filter === "lending") {
+    types = ["request_created", "request_approved", "request_rejected"];
+  } else if (filter === "return") {
+    types = ["request_returned"];
+  }
+
   const logs = await TransactionLog.find({
     timestamp: { $gte: from },
-    type: {
-      $in: [
-        "request_created",
-        "request_approved",
-        "request_rejected",
-        "request_returned",
-      ],
-    },
+    type: { $in: types },
   })
     .sort({ timestamp: -1 })
     .populate("user", "name")
-    .populate("item", "name")
+    .populate("item", "name description imageUrl")
     .populate({
       path: "request",
-      populate: { path: "handledBy", select: "name" },
+      populate: [
+        { path: "handledBy", select: "name" },
+        { path: "item", select: "name description imageUrl" },
+      ],
     })
     .lean()
     .exec();
