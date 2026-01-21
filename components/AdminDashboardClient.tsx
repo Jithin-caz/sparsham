@@ -399,7 +399,7 @@ export default function AdminDashboardClient() {
               className="border-2 border-gray-200 rounded-xl p-4 bg-white hover:shadow-md transition-all duration-300 animate-scale-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex justify-between gap-4">
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3">
                     <h4 className="font-bold text-gray-800">{r.item?.name}</h4>
@@ -435,29 +435,29 @@ export default function AdminDashboardClient() {
                   </div>
                 </div>
                 {r.status === "pending" && (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => actOnRequest(r._id, "approve")}
                       disabled={actingRequestId === r._id}
-                      className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {actingRequestId === r._id ? "Approving..." : "Approve"}
                     </button>
                     <button
                       onClick={() => actOnRequest(r._id, "reject")}
                       disabled={actingRequestId === r._id}
-                      className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {actingRequestId === r._id ? "Rejecting..." : "Reject"}
                     </button>
                   </div>
                 )}
                 {r.status === "approved" && (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => actOnRequest(r._id, "return")}
                       disabled={actingRequestId === r._id}
-                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                      className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {actingRequestId === r._id ? "Marking..." : "Mark Returned"}
                     </button>
@@ -520,7 +520,7 @@ export default function AdminDashboardClient() {
           {members.map((m, index) => (
             <div
               key={m._id}
-              className="flex justify-between items-center border-2 border-gray-200 rounded-lg px-4 py-3 bg-white hover:shadow-md transition-all duration-200 animate-scale-in"
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-2 border-gray-200 rounded-lg px-4 py-3 bg-white hover:shadow-md transition-all duration-200 animate-scale-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <div>
@@ -541,7 +541,7 @@ export default function AdminDashboardClient() {
                 <button
                   onClick={() => approveMember(m._id)}
                   disabled={approvingMemberId === m._id}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {approvingMemberId === m._id ? "Approving..." : "Approve"}
                 </button>
@@ -555,12 +555,12 @@ export default function AdminDashboardClient() {
       </section>
 
       <section className="border-2 border-gray-200 rounded-xl p-6 bg-white shadow-lg animate-slide-in logs-print-container">
-        <div className="flex justify-between items-center mb-4 no-print">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 no-print">
           <h3 className="font-bold text-lg text-gray-800">Transaction Logs</h3>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <button
                onClick={handlePrint}
-               className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+               className="w-full sm:w-auto px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >
                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -568,7 +568,7 @@ export default function AdminDashboardClient() {
                Print
             </button>
             <select
-                className="border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
+                className="w-full sm:w-auto border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as any)}
             >
@@ -577,7 +577,7 @@ export default function AdminDashboardClient() {
                 <option value="return">Item Returns</option>
             </select>
             <select
-                className="border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
+                className="w-full sm:w-auto border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-[#5B65DC] focus:ring-2 focus:ring-[#5B65DC]/20 transition-all"
                 value={period}
                 onChange={(e) =>
                 setPeriod(e.target.value as "weekly" | "monthly" | "yearly")
